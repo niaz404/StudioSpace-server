@@ -1,127 +1,89 @@
-# StudioSpace Server (Express.js & MongoDB)
+# StudioSpace Server API (Node.js, Express & MongoDB)
+**Assignment Submission:** B14-A8-Cat_Harry  
+**Framework Pattern:** Express.js + Native MongoDB Driver (Module 48 Standard)  
+**Database:** MongoDB Atlas (Collection: `studio-assignment-8`)
 
-> High-performance RESTful API backend for **StudioSpace** — Peer-to-Peer Creative Workspace & Production Studio Sharing Platform. Built cleanly with Node.js, Express.js, MongoDB, Mongoose, and JWT authentication.
+---
 
-## 🚀 Overview
+## 🌟 Top 5 Backend Features
 
-StudioSpace backend powers creative workspace listings, reservations, double-booking prevention, wishlists, and user authentication with HTTPOnly cookie security. Written in clean, readable, comfortable JavaScript that is easy to follow and maintain.
+1. **Native MongoDB Driver Integration:** Direct connection using the official `mongodb` v6 client to MongoDB Atlas with fast queries and object ID helpers.
+2. **Challenge 1 — JWT Authentication & Route Protection:** Secure JWT verification for private routes (`/add-studio`, `/studios/edit/:id`, `/my-listings`, `/bookings`, `/wishlist`).
+3. **Challenge 2 — Double-Booking Collision Prevention:** Time interval overlap detection algorithm `(requestedStart < existingEnd && requestedEnd > existingStart)` checking confirmed and pending slots in MongoDB before confirming any reservation.
+4. **Complete Studio CRUD Operations:** Clean RESTful routes to create, read, update, delete, search, filter, and fetch featured studios.
+5. **Saved Studios Wishlist API:** Direct toggle and retrieval endpoints for user bookmarks stored in the `wishlists` MongoDB collection.
+
+---
 
 ## 🛠 Tech Stack
 
-- **Runtime & Language:** Node.js, JavaScript (ES6+ / CommonJS)
-- **Web Framework:** Express.js 4.x
-- **Database & ODM:** MongoDB, Mongoose 8.x
-- **Authentication & Security:** JSON Web Tokens (JWT) stored in HTTPOnly cookies, bcryptjs password hashing
-- **Development Tooling:** Dotenv, CORS, Cookie-Parser, Nodemon / native Node watch
-
-## 🌟 Key Features & Challenges
-
-1. **Challenge 1 (JWT Security with HTTPOnly Cookies):**
-   - Protected server-side mutations (`POST /api/studios`, `DELETE /api/studios/:id`, `POST /api/bookings`).
-   - Secure token storage in HTTPOnly cookies with fallback to `Authorization: Bearer` header.
-   - 401 Unauthorized rejection for tampering or missing tokens.
-
-2. **Challenge 2 (Double-Booking Prevention):**
-   - Time interval overlap detection `(requestedStart < existingEnd && requestedEnd > existingStart)` against existing `Confirmed` & `Pending` bookings in MongoDB for the exact studio workspace and date.
-   - Rejects slot collisions with `409 Conflict` and descriptive availability feedback.
-
-3. **Role & Ownership Authorization:**
-   - Strict owner checks for studio listing modifications and deletions.
-   - Host and creator specific booking management routes.
-
-4. **Saved Studios Wishlist (MongoDB):**
-   - Compound index uniqueness `(userEmail, studioId)` preventing duplicate bookmarks.
-   - Real-time save status checking.
-
-5. **Self-Healing Auto-Seed:**
-   - Automatically populates the database on first boot with 6+ ultra-realistic creative spaces (cyc walls, soundstages, podcast rooms, audio suites, artisan workshops).
-   - Pre-seeds test examiner accounts.
+| Layer | Technology |
+|---|---|
+| **Runtime & Language** | Node.js, JavaScript (ES6+ Modules) |
+| **Server Framework** | Express.js 4.x |
+| **Database** | MongoDB Atlas, Native `mongodb` v6 Driver |
+| **Authentication** | JSON Web Tokens (`jsonwebtoken`), `bcryptjs` |
+| **Configuration** | `dotenv`, `cors` |
+| **Deployment** | Vercel (`vercel.json`) / Render ready |
 
 ---
 
-## 📋 API Endpoints Reference
+## ⚙️ Local Setup Guide
 
-### Authentication (`/api/auth`)
-| Method | Endpoint | Description | Auth Required |
-|---|---|---|---|
-| POST | `/api/auth/register` | Register new user with password validation | No |
-| POST | `/api/auth/login` | Login user, set HTTPOnly cookie & return JWT | No |
-| POST | `/api/auth/google` | Google OAuth profile sync / login | No |
-| GET | `/api/auth/me` | Fetch currently authenticated user | Yes |
-| POST | `/api/auth/logout` | Clear HTTPOnly cookie | No |
+Follow these simple steps to run the server locally on your computer:
 
-### Studios (`/api/studios`)
-| Method | Endpoint | Description | Auth Required |
-|---|---|---|---|
-| GET | `/api/studios` | Filter & search studios (category, price, sort) | No |
-| GET | `/api/studios/featured` | Top 6 rated studios (`.limit(6)`) | No |
-| GET | `/api/studios/:id` | Studio details by ID | No |
-| GET | `/api/studios/user/:email`| User-owned studio listings | Yes |
-| POST | `/api/studios` | Create new studio listing | Yes |
-| PUT | `/api/studios/:id` | Update studio (owner only) | Yes |
-| DELETE | `/api/studios/:id` | Delete studio (owner only) | Yes |
+### 1. Open your terminal in the server directory:
+```bash
+cd server
+```
 
-### Bookings (`/api/bookings`)
-| Method | Endpoint | Description | Auth Required |
-|---|---|---|---|
-| POST | `/api/bookings` | Book studio with double-booking prevention | Yes |
-| GET | `/api/bookings/my` | User's creative bookings | Yes |
-| PATCH | `/api/bookings/:id/cancel` | Cancel booking | Yes |
-| PATCH | `/api/bookings/:id/status` | Update booking status (Pending, Confirmed, etc.) | Yes |
+### 2. Install dependencies:
+```bash
+npm install
+```
 
-### Wishlist (`/api/wishlist`)
-| Method | Endpoint | Description | Auth Required |
-|---|---|---|---|
-| POST | `/api/wishlist/toggle` | Save/unsave studio | Yes |
-| GET | `/api/wishlist` | Get user's saved studios list | Yes |
-| GET | `/api/wishlist/ids` | Get array of saved studio IDs | Yes |
+### 3. Check environment configuration (`server/.env`):
+```env
+PORT=5000
+MONGODB_URI=mongodb+srv://<username>:<password>@cluster0.mongodb.net/studiospace?retryWrites=true&w=majority
+JWT_SECRET=your_jwt_secret_key_here
+CLIENT_URL=http://localhost:3000
+```
+
+### 4. Start the server:
+```bash
+npm run dev
+# or: node index.js
+```
+The server will start on [http://localhost:5000](http://localhost:5000).
 
 ---
 
-## ⚙️ Local Setup Instructions
+## 🔑 Examiner Test Accounts (Stored in MongoDB Atlas)
 
-1. **Clone the repository:**
-   ```bash
-   git clone <server-repo-url>
-   cd server
-   ```
-
-2. **Install dependencies:**
-   ```bash
-   npm install
-   ```
-
-3. **Configure Environment Variables:**
-   Create a `.env` file from `.env.example`:
-   ```bash
-   cp .env.example .env
-   ```
-   Provide your MongoDB connection URI:
-   ```env
-   PORT=5000
-   MONGODB_URI=mongodb+srv://<user>:<password>@cluster0.mongodb.net/studiospace?retryWrites=true&w=majority
-   JWT_SECRET=studiospace_secure_jwt_secret_token_987654321
-   CLIENT_URL=http://localhost:3000
-   NODE_ENV=development
-   ```
-
-4. **Seed Database (Optional - also auto-runs on first boot):**
-   ```bash
-   npm run seed
-   ```
-
-5. **Start Development Server:**
-   ```bash
-   npm run dev
-   ```
+| Account Role | Email Address | Password | Capabilities |
+|---|---|---|---|
+| **Examiner / Creator** | `creator@studiospace.io` | `StudioPassword123` | Book studios, cancel slots, download PDF invoices, save to wishlist |
+| **Studio Host** | `alex.director@studiospace.io` | `StudioHost123` | Manage owned listings, edit spaces, delete studios |
 
 ---
 
-## 🔑 Examiner Test Credentials
+## 📋 API Route Reference
 
-- **Examiner Creator Account:**
-  - **Email:** `creator@studiospace.io`
-  - **Password:** `StudioPassword123`
-- **Host Account:**
-  - **Email:** `alex.director@studiospace.io`
-  - **Password:** `StudioHost123`
+| Method | Route | Description |
+|---|---|---|
+| `GET` | `/` | Health check endpoint |
+| `POST` | `/auth/register` | Register new user |
+| `POST` | `/auth/login` | User login & JWT issue |
+| `POST` | `/auth/google` | Google social login sync |
+| `GET` | `/studios` | Get studios (supports `?category=`, `?search=`, `?maxPrice=`, `?sort=`) |
+| `GET` | `/studios/featured` | Get top 6 featured studios |
+| `GET` | `/studios/:id` | Get studio details |
+| `POST` | `/studios` | Add new studio space (Private) |
+| `PUT` | `/studios/:id` | Update studio space (Private) |
+| `DELETE` | `/studios/:id` | Delete studio space (Private) |
+| `POST` | `/bookings` | Create reservation with double-booking check |
+| `GET` | `/bookings/my` | Get current user's bookings |
+| `PATCH` | `/bookings/:id/cancel` | Cancel pending booking reservation |
+| `GET` | `/wishlist` | Get user saved studios |
+| `POST` | `/wishlist/toggle` | Add/remove studio from wishlist |
