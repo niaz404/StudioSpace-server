@@ -2,6 +2,9 @@
 **Assignment Submission:** B14-A8-Cat_Harry  
 **Framework Pattern:** Express.js + Native MongoDB Driver (Module 48 Standard)  
 **Live API URL:** [https://studiospace-server-akpa.onrender.com](https://studiospace-server-akpa.onrender.com)  
+**Live Client Website:** [https://studio-space-client-virid.vercel.app](https://studio-space-client-virid.vercel.app)  
+**Server Repository:** [https://github.com/niaz404/StudioSpace-server](https://github.com/niaz404/StudioSpace-server)  
+**Client Repository:** [https://github.com/niaz404/StudioSpace-client](https://github.com/niaz404/StudioSpace-client)  
 **Database:** MongoDB Atlas (Collection: `studio-assignment-8`)
 
 ---
