@@ -21,7 +21,7 @@ export async function connectToMongoDB() {
 
 app.use(
   cors({
-    origin: ["http://localhost:3000", process.env.CLIENT_URL].filter(Boolean),
+    origin: (origin, callback) => callback(null, true),
     credentials: true,
   })
 );

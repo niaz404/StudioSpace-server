@@ -1,6 +1,7 @@
 # StudioSpace Server API (Node.js, Express & MongoDB)
 **Assignment Submission:** B14-A8-Cat_Harry  
 **Framework Pattern:** Express.js + Native MongoDB Driver (Module 48 Standard)  
+**Live API URL:** [https://studiospace-server-akpa.onrender.com](https://studiospace-server-akpa.onrender.com)  
 **Database:** MongoDB Atlas (Collection: `studio-assignment-8`)
 
 ---
